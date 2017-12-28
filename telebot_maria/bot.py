@@ -6,6 +6,7 @@ import pprint
 import os
 import random
 import utils
+import audio
 from random import shuffle
 
 bot = telebot.TeleBot(config.token)
@@ -172,24 +173,24 @@ def handle_learning(message):
         config.word_id = word[0]
         config.en_word = word[1]
         config.ru_word = word[2]
-        print("config.word_id = ", config.word_id)
-        print("config.en_word = ", config.en_word)
-        print("config.ru_word = ", config.ru_word)
+        config.path_audio = word[3]
         config.msg_word = "<b>" + config.en_word.upper() + "</b> - " + config.ru_word + " "
     markup = telebot.types.ReplyKeyboardMarkup(True, True)
     markup.row('/learn', '/know')
         # markup.row('c', 'd', 'e')
-    print('dsadasdsdsadsadasd')
+    # print('dsadasdsdsadsadasd')
     bot.send_message(message.chat.id, config.msg_word, reply_markup=markup, parse_mode="HTML")
-    for file in os.listdir('music/'):
-        # print('music_file = ', file)
-        # print("ddddddddddddddddd = ", "" + config.en_word.lower() + "ogg")
-        if file == "" + config.en_word.lower() + ".ogg":
-            print("123443212232243223213212312312321321321312", file)
-            f = open('music/'+file, 'rb')
-            # print("ffffffff",f)
-            msg = bot.send_voice(message.chat.id, f, None)
-            print("message.chat.id = ", message.chat.id)
+    # audio.download_or_get_audio(config.en_word)
+    # for file in os.listdir('music/'):
+    #     print('music_file = ', file)
+    #     print("ddddddddddddddddd = ", "" + config.en_word.lower() + ".ogg")
+    #     if file.lower() == "" + config.en_word.lower() + ".wav":
+    #         print("123443212232243223213212312312321321321312", file)
+    #         f = open('music/'+file, 'rb')
+    #         print("ffffffff",f)
+    print('audio.file', audio.file)
+    msg = bot.send_voice(message.chat.id, audio.download_or_get_audio(config.en_word), None)
+            # print("message.chat.id = ", message.chat.id)
             # А теперь отправим вслед за файлом его file_id
             # bot.send_message(message.chat.id, msg.voice, reply_to_message_id=msg.message_id)
 
@@ -199,6 +200,9 @@ def handle_learning(message):
         #     msg = bot.send_voice(message.chat.id, f, None)
         #     # А теперь отправим вслед за файлом его file_id
         #     bot.send_message(message.chat.id, msg.voice.file_id, reply_to_message_id=msg.message_id)
+
+# def set_audio_word(word):
+
 
 @bot.message_handler(commands=['learn'])
 def handle_learn_word(message):
@@ -238,11 +242,12 @@ def new_en_word_send_for_repeat(message):
         config.word_id = config.row_repeat_word[config.count_repeat][0]
         config.en_word = config.row_repeat_word[config.count_repeat][1]
         config.ru_word = config.row_repeat_word[config.count_repeat][2]
-        config.msg_word = "<b>" + config.en_word.upper() + "</b> - " + config.ru_word + " "
+        config.msg_word =  "<b> " + config.ru_word + "</b>"
         # config.count_repeat += 1
-        for file in os.listdir('music/'):
-            if file == "" + config.en_word.lower() + ".ogg":
-                f = open('music/'+file, 'rb')
+        # for file in os.listdir('music/'):
+        #     if file == "" + config.en_word.lower() + ".ogg":
+        #         # print(file)
+        #         f = open('music/'+file, 'rb')
         markup = telebot.types.ReplyKeyboardMarkup(True, True) # вот этой кнопки
         x = [[i] for i in range(10)]
         list_answer = [config.en_word,'*****','*****','*****']
@@ -250,7 +255,7 @@ def new_en_word_send_for_repeat(message):
         for item in list_answer:
             markup.row(item)
         bot.send_message(message.chat.id, config.msg_word, reply_markup=markup, parse_mode="HTML")
-        msg = bot.send_voice(message.chat.id, f, "audio")
+        # msg = bot.send_voice(message.chat.id, f, None)
         # 
         config.callback = telebot.types.CallbackQuery(message.message_id, message.chat.id, config.en_word, message.chat.id)
     else:
@@ -287,6 +292,7 @@ def new_en_word_send_for_repeat(message):
 # @bot.message_handler(func=lambda message: message.text == "/repeat")
 @bot.message_handler(commands=['repeat'])
 def handle_repeat(message):
+    bot.send_message(message.chat.id, 'Давай повторим слова! \U0001F393 \nВыбери правильный ответ с клавиатуры \U00002705 или напиши сам \U0000270F ')
     config.row_repeat_word = config.select_row_from_users_wordlist()
     # вот тут написать код проверки нажатой кнопки. см.выше
     new_en_word_send_for_repeat(message)
@@ -302,9 +308,10 @@ def check_repeat_words(message):
             # выполняется если слово угаданно
             config.count_repeat += 1
             new_en_word_send_for_repeat(message)
+            bot.send_message(message.chat.id, 'Правильно! \U0001F386 \U0000263A')
         else:
             # выполняется если слово неугаданно
-            bot.send_message(message.chat.id, "Ты не угадал!")
+            bot.send_message(message.chat.id, "Ты не угадал! \U0000274C")
             config.row_repeat_word[config.count_repeat]
             markup = telebot.types.ReplyKeyboardMarkup(True, True)
             config.word_id = config.row_repeat_word[config.count_repeat][0]

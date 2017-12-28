@@ -11,6 +11,7 @@ token = '482230820:AAGcOEQcM75FXrEpIY_9dZlDKHv6xD7x8rc'
 word_id = ''
 en_word = ''
 ru_word = ''
+path_audio = ''
 msg_word = ''
 count = 0
 callback = ''
@@ -67,6 +68,18 @@ def select_row_from_english_words():
     row = cursor.fetchall()
     return row
 
+def add_path_audio(path_audio):
+    conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
+    connection = psycopg2.connect(conn_string)
+    cursor = connection.cursor()
+    word = cursor.execute("UPDATE wordlist SET path_audio = '" + path_audio + '.mp3' + "' WHERE en_word = '" + path_audio + "' RETURNING path_audio;")
+    print("word_word_word_word_word_word_word_word_", word)
+    # print('INSERT INTO users VALUES (' + str(user_id) + ');', user_id)
+    cursor.fetchall()
+    connection.commit()
+    cursor.close()
+    connection.close()
+
 def learn_word(word_id, user_id):
     conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
     connection = psycopg2.connect(conn_string)
@@ -102,6 +115,8 @@ def select_row_from_users_wordlist():
     row = cursor.fetchall()
     print("_row", row)
     return row
+
+
 
 if __name__ == '__main__':
     # bot.polling(none_stop=True)
