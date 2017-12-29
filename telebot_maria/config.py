@@ -31,17 +31,10 @@ def create_new_user(user_id):
     connection = psycopg2.connect(conn_string)
     cursor = connection.cursor()
     user = cursor.execute('INSERT INTO users (user_id) VALUES (' + str(user_id) + ') RETURNING user_id;')
-    # print("12121212121212", user)
-    # print('INSERT INTO users VALUES (' + str(user_id) + ');', user_id)
     cursor.fetchall()
     connection.commit()
     cursor.close()
     connection.close()
-    # cursor.execute('SELECT * FROM users;')
-    # users = cursor.fetchall()
-    # return users
-    # INSERT INTO products (product_no, name, price) VALUES
-    # (1, 'Cheese', 9.99);
 
 def get_username_from_storage(unique_code): 
     conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
