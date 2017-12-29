@@ -1,0 +1,8 @@
+          List of relations
+ Schema |    Name    | Type  | Owner  
+--------+------------+-------+--------
+ public | music      | table | alexey
+ public | musicTable | table | alexey
+(2 rows)
+
+
