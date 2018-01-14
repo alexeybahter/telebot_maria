@@ -132,7 +132,7 @@ def rand(start, stop, count):
 
 # отправляет одно слово на повторение и показывает клавиатуру выбора правильного слова
 def new_en_word_send_for_repeat(message):
-    print('---------------------\n', len(config.row_repeat_word) >= config.count_repeat)
+    print('---------------------\n', len(config.row_repeat_word) > config.count_repeat)
     if len(config.row_repeat_word) > config.count_repeat:
         # markup = telebot.types.ReplyKeyboardMarkup(True, True)
         # print('row__select_row_from_users_wordlist', config.row_repeat_word)
@@ -166,7 +166,8 @@ def new_en_word_send_for_repeat(message):
             print('NUMBER =',number)
             print('LEN_RAND = ', len(config.row_repeat_word))
             print('x_rand', config.row_repeat_word[number])
-            list_answer.append(config.row_repeat_word[number][1].title())
+            if not config.row_repeat_word[number][1].title() == config.en_word.title():
+                list_answer.append(config.row_repeat_word[number][1].title())
         # list_answer = []
         # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
         # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
