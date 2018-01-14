@@ -109,7 +109,7 @@ def select_row_from_users_wordlist(user_id):
     # поставить счетчик для повторений count_repeat_word
     #  дополнить запрос с сравнением по ф
     row_users_wordlist = cursor.fetchall()
-    print("_row", row_users_wordlist)
+    # print("_row", row_users_wordlist)
     return row_users_wordlist
 
 

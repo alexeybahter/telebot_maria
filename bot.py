@@ -7,6 +7,7 @@ import os
 import random
 import utils
 import audio
+from random import randint
 # import request
 # from flask import Flask, request
 from random import shuffle
@@ -111,18 +112,28 @@ def handle_know_word(message):
 def handle_repeat(message):
     bot.send_message(message.chat.id, 'Давай повторим слова! \U0001F393 \nВыбери правильный ответ с клавиатуры \U00002705 \nИли напиши сам \U0000270F Старайся! \U0001F4AA ')
     config.row_repeat_word = config.select_row_from_users_wordlist(message.chat.id)
-    print('len before',len(config.row_repeat_word))
+    # print('len before',len(config.row_repeat_word))
     print('arr before = ', config.row_repeat_word)
     random.shuffle(config.row_repeat_word)
-    config.row_repeat_word.extend([config.row_repeat_word[1], config.row_repeat_word[2], config.row_repeat_word[0]])
-    print('len after',len(config.row_repeat_word))
-    print('arr before =', config.row_repeat_word)
+    # config.row_repeat_word.extend([config.row_repeat_word[1], config.row_repeat_word[2], config.row_repeat_word[0]])
+    print('-------\narr before =', config.row_repeat_word)
+    print('len\n',len(config.row_repeat_word))
     new_en_word_send_for_repeat(message)
+
+def rand(start, stop, count):
+    gamma = []
+    for i in range(count):
+        while True:
+            item = randint(start, stop)
+            if not gamma.count(item):
+                gamma.append(item)
+                yield item
+                break
 
 # отправляет одно слово на повторение и показывает клавиатуру выбора правильного слова
 def new_en_word_send_for_repeat(message):
-    print('---------------------\n', len(config.row_repeat_word) >= config.count_repeat + 3)
-    if len(config.row_repeat_word) >= config.count_repeat + 3:
+    print('---------------------\n', len(config.row_repeat_word) >= config.count_repeat)
+    if len(config.row_repeat_word) > config.count_repeat:
         # markup = telebot.types.ReplyKeyboardMarkup(True, True)
         # print('row__select_row_from_users_wordlist', config.row_repeat_word)
         # random.shuffle(config.row_repeat_word)
@@ -147,12 +158,29 @@ def new_en_word_send_for_repeat(message):
         config.msg_word =  "<b> " + config.ru_word.title() + "</b>"
         markup = telebot.types.ReplyKeyboardMarkup(True, True)
         # correct_answer = config.row_repeat_word.pop(config.count_repeat)
+        # print('after correct_answer =', config.row_repeat_word)
+
         # print('correct_answer', correct_answer)
-        # list_answer = [correct_answer[1].title()]
-        list_answer = []
-        for word in config.row_repeat_word[config.count_repeat:config.count_repeat + 3]:
+        list_answer = [config.en_word.title()]
+        for number in rand(0, len(config.row_repeat_word) - 1, 3):
+            print('NUMBER =',number)
+            print('LEN_RAND = ', len(config.row_repeat_word))
+            print('x_rand', config.row_repeat_word[number])
+            list_answer.append(config.row_repeat_word[number][1].title())
+        # list_answer = []
+        # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
+        # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
+        # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
+        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
+        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
+        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
+        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
+        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
+        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
+
+        # for word in config.row_repeat_word[config.count_repeat:config.count_repeat + 3]:
             # print('word', word[1])
-            list_answer.append(word[1].title())
+            # list_answer.append(word[1].title())
         print('list_answer',list_answer)
         shuffle(list_answer)
         for item in list_answer:
