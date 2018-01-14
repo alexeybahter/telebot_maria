@@ -1,6 +1,6 @@
 import shelve
 from random import shuffle
-from PostgreSQLighter import PostgreSQLighter
+# from PostgreSQLighter import PostgreSQLighter
 
 
 def count_rows():
