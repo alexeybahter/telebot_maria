@@ -1,0 +1,10 @@
+BEGIN TRANSACTION;
+CREATE TABLE 'music' (
+	'id'			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	'file_id'		TEXT NOT NULL,
+	'right_answer'	TEXT NOT NULL,
+	'wrong_answer'	TEXT NOT NULL
+);
+
+INSERT INTO 'music' VALUES (1, '2342', 'Good', 'Bad');
+COMMIT;
