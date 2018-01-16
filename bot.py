@@ -72,6 +72,7 @@ def handle_learning(message):
         print('config.path_audio', config.path_audio)
         print('config.transcription', config.transcription)
         config.msg_word = "<b>" + config.en_word.upper() + "</b> - " + config.transcription + " - <i>" + config.ru_word + "</i>"
+        print('---\n', config.msg_word, end='----\n')
     markup = telebot.types.ReplyKeyboardMarkup(True, True)
     markup.row('/learn', '/know')
     bot.send_message(message.chat.id, config.msg_word, reply_markup=markup, parse_mode="HTML")
@@ -83,14 +84,14 @@ def handle_learning(message):
 def handle_learn_word(message):
     print("@bot.message_handler(commands=['learn']) config.word_id", config.word_id)
     config.learn_word(config.word_id, message.chat.id)
-    config.count += 1
+    config.count_learn += 1
     # callback = telebot.types.CallbackQuery(config.count, message.chat.id, config.count, message.chat.id)
-    if config.count != 5:
+    if config.count_learn != 5:
         print('config.count', config.count)
         # print("callback", callback)
         handle_learning(message)
     else:
-        config.count = 0
+        config.count_learn = 0
         # callback = ''
         # bot.send_message(message.chat.id, "Ты узнал 10 новых слов, пора их повторить!")
         markup = telebot.types.ReplyKeyboardMarkup(True, True)
@@ -162,12 +163,20 @@ def new_en_word_send_for_repeat(message):
 
         # print('correct_answer', correct_answer)
         list_answer = [config.en_word.title()]
-        for number in rand(0, len(config.row_repeat_word) - 1, 3):
+        # numbers = []
+        # даже не спрашивай как это работает (%_%)
+        for number in rand(0, len(config.row_repeat_word) - 1, 4):
+            # numbers.apend(number)
             print('NUMBER =',number)
-            print('LEN_RAND = ', len(config.row_repeat_word))
-            print('x_rand', config.row_repeat_word[number])
-            if not config.row_repeat_word[number][1].title() == config.en_word.title():
+            # print('LEN_RAND = ', len(config.row_repeat_word))
+            print('x_rand', config.row_repeat_word[number][1].title())
+            if not config.row_repeat_word[number][1].title() == config.en_word.title() and len(list_answer) <= 3:
                 list_answer.append(config.row_repeat_word[number][1].title())
+            else:
+                continue
+                # while True:
+                #     for number in rand(0, len(config.row_repeat_word) - 1, 1):
+
         # list_answer = []
         # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
         # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
