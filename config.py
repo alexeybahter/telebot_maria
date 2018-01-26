@@ -20,6 +20,7 @@ count_learn = 0
 callback = ''
 row_repeat_word = ''
 count_repeat = 0
+count_repeat_of_word = 0
 # records = ''
 def connect_to_db():
     conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
@@ -53,7 +54,6 @@ def get_username_from_storage(unique_code):
             return user
     # return users
 
-
 def select_row_from_wordlist(user_id):
     conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
     # print ("Connecting to database", conn_string)
@@ -77,11 +77,23 @@ def add_path_audio(path_audio):
     cursor.close()
     connection.close()
 
+def increment_count_repeat(word_id, user_id, count_repeat_of_word):
+    conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
+    connection = psycopg2.connect(conn_string)
+    cursor = connection.cursor()
+    word = cursor.execute("UPDATE users_wordlist SET count_repeat = '" + str(count_repeat_of_word) + "' WHERE word_id = '" + str(word_id) + "'AND user_id = '" + str(user_id) + "' RETURNING count_repeat;")
+    print("word_word_word_word_word_word_word_word_", word)
+    # print('INSERT INTO users VALUES (' + str(user_id) + ');', user_id)
+    cursor.fetchall()
+    connection.commit()
+    cursor.close()
+    connection.close()
+
 def learn_word(word_id, user_id):
     conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
     connection = psycopg2.connect(conn_string)
     cursor = connection.cursor()
-    word = cursor.execute('INSERT INTO  users_wordlist ( user_id, word_id, learn_word) VALUES ('+ str(user_id) + ',' + str(word_id) + ', true)  RETURNING word_id;')
+    word = cursor.execute('INSERT INTO  users_wordlist ( user_id, word_id, learn_word, count_repeat) VALUES ('+ str(user_id) + ',' + str(word_id) + ', true, 0)  RETURNING word_id;')
     print("word_word_word_word_word_word_word_word_", word)
     # print('INSERT INTO users VALUES (' + str(user_id) + ');', user_id)
     cursor.fetchall()
@@ -105,7 +117,7 @@ def select_row_from_users_wordlist(user_id):
     conn_string = "host='localhost' dbname='telebot_db' user='alexey' password=''"
     connection = psycopg2.connect(conn_string)
     cursor = connection.cursor()
-    cursor.execute('SELECT wordlist.word_id,en_word,ru_word,transcription,user_id FROM wordlist JOIN users_wordlist ON wordlist.word_id = users_wordlist.word_id WHERE users_wordlist.user_id =' + str(user_id) + ';')
+    cursor.execute('SELECT wordlist.word_id,en_word,ru_word,transcription,user_id, count_repeat FROM wordlist JOIN users_wordlist ON wordlist.word_id = users_wordlist.word_id WHERE users_wordlist.user_id =' + str(user_id) + ';')
     # поставить счетчик для повторений count_repeat_word
     #  дополнить запрос с сравнением по ф
     row_users_wordlist = cursor.fetchall()

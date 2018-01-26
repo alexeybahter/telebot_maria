@@ -58,10 +58,15 @@ def handle_start(message):
 # @bot.message_handler(func=lambda message: message.text == "/learn")
 @bot.message_handler(commands=['learning'])
 def handle_learning(message):
-    row = config.select_row_from_wordlist(message.chat.id)
-    print('------row = ', row)
-    print('lenght_row',len(row))
-    for word in row:
+    learning_words_10 = config.select_row_from_wordlist(message.chat.id)
+    print('------row = ', learning_words_10)
+    print('lenght_row',len(learning_words_10))
+    config.word_id = learning_words_10[config.count_learn][0]
+    config.en_word = learning_words_10[config.count_learn][1]
+    config.ru_word = word[2]
+    config.path_audio = word[3]
+    config.transcription
+    for word in learning_words_10:
         config.word_id = word[0]
         config.en_word = word[1]
         config.ru_word = word[2]
@@ -71,7 +76,7 @@ def handle_learning(message):
         print('config.en_word', config.en_word)
         print('config.path_audio', config.path_audio)
         print('config.transcription', config.transcription)
-        config.msg_word = "<b>" + config.en_word.upper() + "</b> - " + config.transcription + " - <i>" + config.ru_word + "</i>"
+        config.msg_word = "<b>" + config.en_word.upper() + "</b> " + config.transcription + " - <i>" + config.ru_word + "</i>"
         print('---\n', config.msg_word, end='----\n')
     markup = telebot.types.ReplyKeyboardMarkup(True, True)
     markup.row('/learn', '/know')
@@ -83,11 +88,14 @@ def handle_learning(message):
 @bot.message_handler(commands=['learn'])
 def handle_learn_word(message):
     print("@bot.message_handler(commands=['learn']) config.word_id", config.word_id)
+    # валидация, если слова нет в переменной, то выходим из метода
+    if not config.word_id:
+        return
     config.learn_word(config.word_id, message.chat.id)
     config.count_learn += 1
     # callback = telebot.types.CallbackQuery(config.count, message.chat.id, config.count, message.chat.id)
     if config.count_learn != 5:
-        print('config.count', config.count)
+        print('config.count', config.count_learn)
         # print("callback", callback)
         handle_learning(message)
     else:
@@ -135,62 +143,28 @@ def rand(start, stop, count):
 def new_en_word_send_for_repeat(message):
     print('---------------------\n', len(config.row_repeat_word) > config.count_repeat)
     if len(config.row_repeat_word) > config.count_repeat:
-        # markup = telebot.types.ReplyKeyboardMarkup(True, True)
-        # print('row__select_row_from_users_wordlist', config.row_repeat_word)
-        # random.shuffle(config.row_repeat_word)
-        # print('-------------------------shuffle\nconfig.row_repeat_word', config.row_repeat_word)
         words_length = len(config.row_repeat_word)
-        # if words_length != 10:
-            # bot.send_message(message.chat.id, "Тебе нечего повторять. Изучи первые 10 слов.")
-        # print('len = ', words_length)
-        # print('config.count_repeat', config.count_repeat)
-        # print('config.row_repeat_word[config.count_repeat]', config.row_repeat_word[config.count_repeat][1])
         for item in config.row_repeat_word:
             print('item = ', item[1])
-        # if len(config.row_repeat_word) != len(config.row_repeat_word) + 3:
-        #     config.row_repeat_word.extend([config.row_repeat_word[1], config.row_repeat_word[2], config.row_repeat_word[0]])
-        #     print("xxxxxx", len(config.row_repeat_word))
         config.word_id = config.row_repeat_word[config.count_repeat][0]
         config.en_word = config.row_repeat_word[config.count_repeat][1]
         config.ru_word = config.row_repeat_word[config.count_repeat][2]
+        config.count_repeat_of_word = config.row_repeat_word[config.count_repeat][5]
+        print('\n -\-\-\-\-\-\-\-', config.count_repeat_of_word)
         print('--\nconfig.word_id', config.word_id)
         print('config.en_word', config.en_word)
         print('config.ru_word', config.ru_word + '\n--')
         config.msg_word =  "<b> " + config.ru_word.title() + "</b>"
         markup = telebot.types.ReplyKeyboardMarkup(True, True)
-        # correct_answer = config.row_repeat_word.pop(config.count_repeat)
-        # print('after correct_answer =', config.row_repeat_word)
-
-        # print('correct_answer', correct_answer)
         list_answer = [config.en_word.title()]
-        # numbers = []
         # даже не спрашивай как это работает (%_%)
         for number in rand(0, len(config.row_repeat_word) - 1, 4):
-            # numbers.apend(number)
             print('NUMBER =',number)
-            # print('LEN_RAND = ', len(config.row_repeat_word))
             print('x_rand', config.row_repeat_word[number][1].title())
             if not config.row_repeat_word[number][1].title() == config.en_word.title() and len(list_answer) <= 3:
                 list_answer.append(config.row_repeat_word[number][1].title())
             else:
                 continue
-                # while True:
-                #     for number in rand(0, len(config.row_repeat_word) - 1, 1):
-
-        # list_answer = []
-        # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
-        # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
-        # config.row_repeat_word[random.randrange(0, len(config.row_repeat_word), 1)][1]
-        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
-        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
-        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
-        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
-        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
-        # print('random',random.randrange(0, len(config.row_repeat_word), 1))
-
-        # for word in config.row_repeat_word[config.count_repeat:config.count_repeat + 3]:
-            # print('word', word[1])
-            # list_answer.append(word[1].title())
         print('list_answer',list_answer)
         shuffle(list_answer)
         for item in list_answer:
@@ -199,10 +173,7 @@ def new_en_word_send_for_repeat(message):
         config.callback = telebot.types.CallbackQuery(message.message_id, message.chat.id, config.en_word, message.chat.id)
         print('----\nlen = ', words_length)
         print('config.count_repeat', config.count_repeat)
-        # print('config.row_repeat_word[config.count_repeat]', config.row_repeat_word[config.count_repeat][1])
     else:
-        # config.row_repeat_word = config.select_row_from_users_wordlist(message.chat.id)
-        # bot.send_message(message.chat.id, "У тебя нет слов для повторения!")
         markup = telebot.types.ReplyKeyboardMarkup(True, True)
         markup.row('/learning')
         bot.send_message(message.chat.id, "У тебя нет слов для повторения!", reply_markup=markup)
@@ -225,6 +196,8 @@ def check_repeat_words(message):
         if config.callback.data.title() == message.text:
             # выполняется если слово угаданно
             bot.send_message(message.chat.id, 'Правильно! \U0000263A')
+            # тут надо записать что слово удачно повторилось в бд
+            config.increment_count_repeat(config.word_id, message.chat.id, config.count_repeat_of_word + 1)
             config.count_repeat += 1
             new_en_word_send_for_repeat(message)
         else:
